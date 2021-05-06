@@ -430,6 +430,7 @@ map<int, int> SpecDynMeans<G>::getOldNewMatching(vector< pair<int, int> > nodePa
 	Variable* obj = new Variable[nVars];
 	// add variables/objective	
 	for (int i = 0; i < nVars; i++){
+    	solver.addEditVariable(obj[i], strength::strong);
 		solver.suggestValue(obj[i], edgeWeights[i]);
 	}
 

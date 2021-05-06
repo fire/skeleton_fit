@@ -29,8 +29,10 @@
 /*************************************************************************/
 
 #include "register_types.h"
+#include "mainsdm.h"
 
 void register_skeleton_fit_types() {
+	sdm_main(0, nullptr);
 }
 
 void unregister_skeleton_fit_types() {

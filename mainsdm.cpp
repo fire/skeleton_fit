@@ -17,6 +17,7 @@ typedef Eigen::Vector2d V2d;
 #include "thirdparty/dynamic-means/src/specdynmeans.hpp"
 #include "expgraph.hpp"
 
+#include "mainsdm.h"
 
 
 //function declarations
