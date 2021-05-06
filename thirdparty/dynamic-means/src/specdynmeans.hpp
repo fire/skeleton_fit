@@ -7,9 +7,9 @@
 #include<sys/time.h>
 #include <ctime>
 #include <random>
-#include "gurobi_c++.h" //note: the use of this library requires gurobi!
-#include <eigen3/Eigen/Sparse>
-#include <eigen3/Eigen/Dense>
+#include <kiwi/kiwi.h>
+#include <Eigen/Sparse>
+#include <Eigen/Dense>
 
 using namespace std;
 
@@ -30,6 +30,7 @@ typedef Eigen::Triplet<double> TD;
 //2) Chop your data up into suitable time windows
 //3) Run SpecDynMeans::cluster on each time window in sequence
 
+using namespace kiwi;
 
 template <typename G>
 class SpecDynMeans{
@@ -47,7 +48,6 @@ class SpecDynMeans{
 		void reset();
 
 	private:
-		GRBEnv* grbenv;
 		mt19937 rng;
 		double lamb, Q, tau;
 		bool verbose;

@@ -23,18 +23,12 @@ SpecDynMeans<G>::SpecDynMeans(double lamb, double Q, double tau, bool verbose /*
 	} else{
 		this->rng.seed(seed);
 	}
-	grbenv = new GRBEnv();
-	grbenv->set(GRB_IntParam_OutputFlag, 0);//controls the output of Gurobi - 0 means no output, 1 means normal output
-	//grbenv->set(GRB_IntParam_Method, 1);//controls which method Gurobi uses - default -1 (auto), 0=primal simplex, 1=dual simplex, 2=barrier, 3=concurrent, 4=deterministic concurrent
-	grbenv->set(GRB_IntParam_Threads, 1);//controls the number of threads Gurobi uses - I force it to use 1 since the optimization in this algorithm is fairly small/simple
-									    // 												and it just ends up wasting time constantly creating/deleting threads otherwise
 }
 
 //Just the destructor for the class
 
 template <typename G>
 SpecDynMeans<G>::~SpecDynMeans(){
-	delete grbenv;//make sure the gurobi environment is destroyed
 }
 
 //Reset returns the class object to its initial state, ready to start a new DDP chain
@@ -312,9 +306,6 @@ void SpecDynMeans<G>::getKernelMat(const G& aff, SMXd& kUpper){
 
 template <typename G>
 void SpecDynMeans<G>::solveEigensystem(SMXd& kUpper, const int nEigs, EigenSolverType type, MXd& eigvecs){
-	const int nB = this->ages.size();
-	const int nA = kUpper.rows()-nB;
-
 	VXd eigvals;
 	if (type == EIGEN_SELF_ADJOINT){
 			Eigen::SelfAdjointEigenSolver<MXd> eigB;
@@ -432,20 +423,15 @@ void SpecDynMeans<G>::findClosestConstrained(const MXd& ZV, MXd& X) const{
 
 template <typename G>
 map<int, int> SpecDynMeans<G>::getOldNewMatching(vector< pair<int, int> > nodePairs, vector<double> edgeWeights ) const{
-	//get params
+    Solver solver;
+	// get params
 	int nVars = edgeWeights.size();
-
-	//start up GRB
-	try{
-	GRBModel grbmodel(*grbenv);
-	//add variables/objective
-	double* obj = new double[nVars];
+			
+	Variable* obj = new Variable[nVars];
+	// add variables/objective	
 	for (int i = 0; i < nVars; i++){
-		obj[i] = edgeWeights[i];
+		solver.suggestValue(obj[i], edgeWeights[i]);
 	}
-	GRBVar* grbvars = grbmodel.addVars(NULL, NULL,obj, NULL, NULL, nVars);
-
-	grbmodel.update();
 
 	//one constraint for each A/B node, plus one constraint for each edge
 	vector<int> A, B;
@@ -457,50 +443,42 @@ map<int, int> SpecDynMeans<G>::getOldNewMatching(vector< pair<int, int> > nodePa
 			B.push_back(nodePairs[i].second);
 		}
 	}
+	
 	//add constraints
 	//constraint type 1: sum of outgoing edges from A nodes = 1
 	for (int i = 0; i < A.size(); i++){
-		GRBLinExpr constrlhs;
 		for (int j = 0; j < nVars; j++){
 			if (nodePairs[j].first == A[i]){
-				constrlhs += 1.0*grbvars[j];
+				Constraint constraint = { 1.0 * obj[j] == 1};
+    			solver.addConstraint(constraint);
 			}
 		}
-		grbmodel.addConstr(constrlhs, GRB_EQUAL, 1);
 	}
 	
 	//constraint type 2: sum of incoming edges to B nodes <= 1
 	for (int i = 0; i < B.size(); i++){
-		GRBLinExpr constrlhs;
 		for (int j = 0; j < nVars; j++){
 			if (nodePairs[j].second == B[i]){
-				constrlhs += 1.0*grbvars[j];
+				Constraint constraint = { 1.0 * obj[j] <= 1 };
+    			solver.addConstraint(constraint);
 			}
 		}
-		grbmodel.addConstr(constrlhs, GRB_LESS_EQUAL, 1);
 	}
 	//constraint type 3: all edge variables >= 0
 	//simplex has an implicit bound of >=0 on all variables, don't need this
 
-	grbmodel.optimize();
+	solver.updateVariables();
 
 	map<int, int> retmap;
 	for (int j = 0; j < edgeWeights.size(); j++){
-		double val = grbvars[j].get(GRB_DoubleAttr_X);
+		double val = obj[j].value();
 		if (fabs(val - 1.0) < 1e-10){
 			retmap[nodePairs[j].first] = nodePairs[j].second;
 			A.erase(remove(A.begin(), A.end(), nodePairs[j].first), A.end());
 		}
 	}
-	delete[] grbvars;
 	delete[] obj;
 	return retmap;
-	} catch (GRBException e){
-		cout << "Error code = " << e.getErrorCode() << endl;
-		cout << e.getMessage() << endl;
-	} catch (...){
-		cout << "Exception during optimization" << endl;
-	}
 }
 
 
@@ -659,7 +637,6 @@ vector<int> SpecDynMeans<G>::getLblsFromIndicatorMat(const MXd& X) const {
 template <typename G>
 double SpecDynMeans<G>::getNormalizedCutsObj(const SMXd& spmatUpper, const vector<int>& lbls) const{
 	const int nA = lbls.size();
-	const int nB = this->ages.size();
 	map<int, double> nums, denoms;
 	for (int i = 0; i < spmatUpper.outerSize(); ++i){
 		for (SMXd::InnerIterator it(spmatUpper, i); it; ++it){

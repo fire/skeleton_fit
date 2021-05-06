@@ -7,7 +7,7 @@ env_skeleton_fit = env_modules.Clone()
 
 env_skeleton_fit.Prepend(CPPPATH=['.'])
 env_skeleton_fit.Prepend(CPPPATH=['thirdparty/Eigen'])
-env_skeleton_fit.Prepend(CPPPATH=['thirdparty/kiwi/kiwi'])
+env_skeleton_fit.Prepend(CPPPATH=['thirdparty/kiwi'])
 env_skeleton_fit.Prepend(CPPPATH=['thirdparty/dynamic-means/src'])
 env_thirdparty = env_skeleton_fit.Clone()
 
