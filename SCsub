@@ -13,6 +13,5 @@ env_thirdparty = env_skeleton_fit.Clone()
 
 # env_thirdparty.disable_warnings()
 # env_thirdparty.add_source_files(env.modules_sources, "src/*.cpp")
-# env_thirdparty.add_source_files(env.modules_sources, 'thirdparty/dynamic-means/src/*.hpp')
 
 env_skeleton_fit.add_source_files(env.modules_sources, "*.cpp")

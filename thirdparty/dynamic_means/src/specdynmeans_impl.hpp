@@ -466,7 +466,10 @@ map<int, int> SpecDynMeans<G>::getOldNewMatching(vector< pair<int, int> > nodePa
 		}
 	}
 	//constraint type 3: all edge variables >= 0
-	//simplex has an implicit bound of >=0 on all variables, don't need this
+	for (int j = 0; j < nVars; j++){
+		Constraint constraint = { 1.0 * obj[j] >= 0 };
+		solver.addConstraint(constraint);
+	}
 
 	solver.updateVariables();
 
