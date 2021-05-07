@@ -144,10 +144,8 @@ getMaxMatching(vector<int> labels1, vector<int> labels2){
 	for (set<int>::iterator it1 = l1set.begin(); it1 != l1set.end(); it1++){
 		int j = 0;
 		vector<Term> edges;
-		for (set<int>::iterator it2 = l2set.begin(); it2 != l2set.end(); it2++){
-			solver.suggestValue(varweights[j], 1);
-			solver.suggestValue(varnos[j], varMap[pair<int,int>(*it1, *it2)]);			
-			edges.push_back(varweights[j]);
+		for (set<int>::iterator it2 = l2set.begin(); it2 != l2set.end(); it2++){	
+			edges.push_back(1.0 * varweights[j]);
 			j++;
 		}
 		solver.addConstraint(Constraint{edges == 1});
@@ -157,10 +155,8 @@ getMaxMatching(vector<int> labels1, vector<int> labels2){
 	for (set<int>::iterator it2 = l2set.begin(); it2 != l2set.end(); it2++){
 		int j = 0;
 		vector<Term> edges;
-		for (set<int>::iterator it1 = l1set.begin(); it1 != l1set.end(); it1++){
-			solver.suggestValue(varweights[j], 1);
-			solver.suggestValue(varnos[j], varMap[pair<int,int>(*it1, *it2)]);				
-			edges.push_back(varweights[j]);
+		for (set<int>::iterator it1 = l1set.begin(); it1 != l1set.end(); it1++){	
+			edges.push_back(1.0 * varweights[j]);
 			j++;
 		}
 		solver.addConstraint(Constraint{edges == 1});
@@ -319,9 +315,7 @@ map<int, int> getMaxMatchingConsistentWithOldMatching(vector<int> labels1, vecto
 		int j = 0;
 		vector<Term> edges;
 		for (set<int>::iterator it2 = l2set.begin(); it2 != l2set.end(); it2++){
-			solver.suggestValue(varweights[j], 1);
-			solver.suggestValue(varnos[j], varMap[pair<int,int>(*it1, *it2)]);
-			edges.push_back(varweights[j]);
+			edges.push_back(1.0 * varweights[j]);
 			j++;
 		}
 		solver.addConstraint(Constraint{edges == 1});
@@ -330,10 +324,8 @@ map<int, int> getMaxMatchingConsistentWithOldMatching(vector<int> labels1, vecto
 	for (set<int>::iterator it2 = l2set.begin(); it2 != l2set.end(); it2++){
 		int j = 0;
 		vector<Term> edges;
-		for (set<int>::iterator it1 = l1set.begin(); it1 != l1set.end(); it1++){			
-			solver.suggestValue(varweights[j], 1);
-			solver.suggestValue(varnos[j], varMap[pair<int,int>(*it1, *it2)]);
-			edges.push_back(varweights[j]);
+		for (set<int>::iterator it1 = l1set.begin(); it1 != l1set.end(); it1++){
+			edges.push_back(1.0 * varweights[j]);
 			j++;
 		}
 		solver.addConstraint(Constraint{edges == 1});
@@ -484,9 +476,7 @@ getWeightedMaxMatching(vector<int> labels1, vector<int> labels2, vector<double> 
 		int j = 0;
 		vector<Term> edges;
 		for (set<int>::iterator it2 = l2set.begin(); it2 != l2set.end(); it2++){
-			solver.suggestValue(varweights[j], 1);
-			solver.suggestValue(varnos[j], varMap[pair<int,int>(*it1, *it2)]);
-			edges.push_back(varweights[j]);
+			edges.push_back(1.0 * varweights[j]);
 			j++;
 		}		
 		solver.addConstraint(Constraint{edges == 1});
@@ -495,10 +485,8 @@ getWeightedMaxMatching(vector<int> labels1, vector<int> labels2, vector<double> 
 	for (set<int>::iterator it2 = l2set.begin(); it2 != l2set.end(); it2++){
 		int j = 0;
 		vector<Term> edges;
-		for (set<int>::iterator it1 = l1set.begin(); it1 != l1set.end(); it1++){			
-			solver.suggestValue(varweights[j], 1);
-			solver.suggestValue(varnos[j], varMap[pair<int,int>(*it1, *it2)]);
-			edges.push_back(varweights[j]);
+		for (set<int>::iterator it1 = l1set.begin(); it1 != l1set.end(); it1++){	
+			edges.push_back(1.0 * varweights[j]);
 			j++;
 		}
 		solver.addConstraint(Constraint{edges == 1});

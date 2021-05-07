@@ -451,7 +451,7 @@ map<int, int> SpecDynMeans<G>::getOldNewMatching(vector< pair<int, int> > nodePa
 		vector<Term> constrlhs;
 		for (int j = 0; j < nVars; j++){
 			if (nodePairs[j].first == A[i]){
-				constrlhs.push_back(obj[j]);
+				constrlhs.push_back(Term(1.0 * obj[j]));
 			}
 		}
     	solver.addConstraint(Constraint{constrlhs == 1});
@@ -462,13 +462,13 @@ map<int, int> SpecDynMeans<G>::getOldNewMatching(vector< pair<int, int> > nodePa
 		vector<Term> constrlhs;
 		for (int j = 0; j < nVars; j++){
 			if (nodePairs[j].second == B[i]){
-				constrlhs.push_back(obj[j]);
+				constrlhs.push_back(Term(1.0 * obj[j]));
 			}
 		}
     	solver.addConstraint(Constraint{constrlhs <= 1});
 	}
 	//constraint type 3: all edge variables >= 0
-	// Empty
+	//Empty
 
 	solver.updateVariables();
 

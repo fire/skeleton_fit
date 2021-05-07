@@ -78,7 +78,7 @@ int sdm_main(int argc, char** argv){
 	int nClusMax = 20; // maximum 20 new clusters per timestep
 					  //this forms the rank approximation for the eigendecomp
 					  //rank approx = nClusMax + (# old clusters)
-	SpecDynMeans<ExpGraph> sdm(lambda, Q, tau, true);
+	SpecDynMeans<ExpGraph> sdm(lambda, Q, tau);
 	ExpGraph vgr;
 
 	//run the experiment
