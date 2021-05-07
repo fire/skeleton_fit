@@ -44,7 +44,6 @@ void SpecDynMeans<G>::reset(){
 }
 
 //This function updates the weights/ages of all the clusters after each clustering step is complete
-//This function updates the weights/ages of all the clusters after each clustering step is complete
 template <typename G>
 void SpecDynMeans<G>::finalizeStep(const G& aff, const vector<int>& lbls, vector<double>& prevgammas_out, vector<int>& prmlbls_out){
 	//first increment the age of everything
