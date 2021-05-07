@@ -448,28 +448,27 @@ map<int, int> SpecDynMeans<G>::getOldNewMatching(vector< pair<int, int> > nodePa
 	//add constraints
 	//constraint type 1: sum of outgoing edges from A nodes = 1
 	for (int i = 0; i < A.size(); i++){
+		vector<Term> constrlhs;
 		for (int j = 0; j < nVars; j++){
 			if (nodePairs[j].first == A[i]){
-				Constraint constraint = { 1.0 * obj[j] == 1};
-    			solver.addConstraint(constraint);
+				constrlhs.push_back(obj[j]);
 			}
 		}
+    	solver.addConstraint(Constraint{constrlhs == 1});
 	}
 	
 	//constraint type 2: sum of incoming edges to B nodes <= 1
 	for (int i = 0; i < B.size(); i++){
+		vector<Term> constrlhs;
 		for (int j = 0; j < nVars; j++){
 			if (nodePairs[j].second == B[i]){
-				Constraint constraint = { 1.0 * obj[j] <= 1 };
-    			solver.addConstraint(constraint);
+				constrlhs.push_back(obj[j]);
 			}
 		}
+    	solver.addConstraint(Constraint{constrlhs <= 1});
 	}
 	//constraint type 3: all edge variables >= 0
-	for (int j = 0; j < nVars; j++){
-		Constraint constraint = { 1.0 * obj[j] >= 0 };
-		solver.addConstraint(constraint);
-	}
+	// Empty
 
 	solver.updateVariables();
 

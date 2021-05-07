@@ -143,24 +143,27 @@ getMaxMatching(vector<int> labels1, vector<int> labels2){
 	//constrant type 1: the sum of outgoing edges from each of the A vertices = 1
 	for (set<int>::iterator it1 = l1set.begin(); it1 != l1set.end(); it1++){
 		int j = 0;
+		vector<Term> edges;
 		for (set<int>::iterator it2 = l2set.begin(); it2 != l2set.end(); it2++){
 			solver.suggestValue(varweights[j], 1);
-			solver.addConstraint(Constraint{ varweights[j] <= 1 });
-			solver.suggestValue(varnos[j], varMap[pair<int,int>(*it1, *it2)]);
-			solver.addConstraint(Constraint{ varnos[j] <= 1 });
+			solver.suggestValue(varnos[j], varMap[pair<int,int>(*it1, *it2)]);			
+			edges.push_back(varweights[j]);
 			j++;
 		}
+		solver.addConstraint(Constraint{edges == 1});
 	}
+
 	//constraint type 2: the sum of incoming edges to each fo the B vertices = 1
 	for (set<int>::iterator it2 = l2set.begin(); it2 != l2set.end(); it2++){
 		int j = 0;
+		vector<Term> edges;
 		for (set<int>::iterator it1 = l1set.begin(); it1 != l1set.end(); it1++){
 			solver.suggestValue(varweights[j], 1);
-			solver.addConstraint(Constraint{ varweights[j] <= 1 });
-			solver.suggestValue(varnos[j], varMap[pair<int,int>(*it1, *it2)]);
-			solver.addConstraint(Constraint{ varnos[j] <= 1 });
+			solver.suggestValue(varnos[j], varMap[pair<int,int>(*it1, *it2)]);				
+			edges.push_back(varweights[j]);
 			j++;
 		}
+		solver.addConstraint(Constraint{edges == 1});
 	}
 	//add objective
 	int j = 0;
@@ -314,24 +317,26 @@ map<int, int> getMaxMatchingConsistentWithOldMatching(vector<int> labels1, vecto
 	//constrant type 1: the sum of outgoing edges from each of the A vertices = 1
 	for (set<int>::iterator it1 = l1set.begin(); it1 != l1set.end(); it1++){
 		int j = 0;
+		vector<Term> edges;
 		for (set<int>::iterator it2 = l2set.begin(); it2 != l2set.end(); it2++){
 			solver.suggestValue(varweights[j], 1);
-			solver.addConstraint(Constraint{ varweights[j] <= 1 });
 			solver.suggestValue(varnos[j], varMap[pair<int,int>(*it1, *it2)]);
-			solver.addConstraint(Constraint{ varnos[j] <= 1 });
+			edges.push_back(varweights[j]);
 			j++;
 		}
+		solver.addConstraint(Constraint{edges == 1});
 	}
 	//constraint type 2: the sum of incoming edges to each fo the B vertices = 1
 	for (set<int>::iterator it2 = l2set.begin(); it2 != l2set.end(); it2++){
 		int j = 0;
+		vector<Term> edges;
 		for (set<int>::iterator it1 = l1set.begin(); it1 != l1set.end(); it1++){			
 			solver.suggestValue(varweights[j], 1);
-			solver.addConstraint(Constraint{ varweights[j] <= 1 });
 			solver.suggestValue(varnos[j], varMap[pair<int,int>(*it1, *it2)]);
-			solver.addConstraint(Constraint{ varnos[j] <= 1 });
+			edges.push_back(varweights[j]);
 			j++;
 		}
+		solver.addConstraint(Constraint{edges == 1});
 	}
 	int j = 0;
 	for (map<pair<int, int>, int>::iterator it = varMap.begin(); it != varMap.end(); it++){		
@@ -477,24 +482,26 @@ getWeightedMaxMatching(vector<int> labels1, vector<int> labels2, vector<double> 
 	//constrant type 1: the sum of outgoing edges from each of the A vertices = 1
 	for (set<int>::iterator it1 = l1set.begin(); it1 != l1set.end(); it1++){
 		int j = 0;
+		vector<Term> edges;
 		for (set<int>::iterator it2 = l2set.begin(); it2 != l2set.end(); it2++){
 			solver.suggestValue(varweights[j], 1);
-			solver.addConstraint(Constraint{ varweights[j] <= 1 });
 			solver.suggestValue(varnos[j], varMap[pair<int,int>(*it1, *it2)]);
-			solver.addConstraint(Constraint{ varnos[j] <= 1 });
+			edges.push_back(varweights[j]);
 			j++;
-		}
+		}		
+		solver.addConstraint(Constraint{edges == 1});
 	}
-	//constraint type 2: the sum of incoming edges to each fo the B vertices = 1
+	//constraint type 2: the sum of incoming edges to each of the B vertices = 1
 	for (set<int>::iterator it2 = l2set.begin(); it2 != l2set.end(); it2++){
 		int j = 0;
+		vector<Term> edges;
 		for (set<int>::iterator it1 = l1set.begin(); it1 != l1set.end(); it1++){			
 			solver.suggestValue(varweights[j], 1);
-			solver.addConstraint(Constraint{ varweights[j] <= 1 });
 			solver.suggestValue(varnos[j], varMap[pair<int,int>(*it1, *it2)]);
-			solver.addConstraint(Constraint{ varnos[j] <= 1 });
+			edges.push_back(varweights[j]);
 			j++;
 		}
+		solver.addConstraint(Constraint{edges == 1});
 	}
 	int j = 0;
 	for (map<pair<int, int>, int>::iterator it = varMap.begin(); it != varMap.end(); it++){
